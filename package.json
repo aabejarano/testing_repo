@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Playwright tests for Google search verification",
   "scripts": {
-    "test": "playwright test"
+    "test": "bddgen && playwright test",
+    "bddgen": "bddgen"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0"
+  },
+  "dependencies": {
+    "playwright-bdd": "^8.4.2"
   }
 }

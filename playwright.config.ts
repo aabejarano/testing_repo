@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
 
 // Parse proxy from environment (HTTPS_PROXY takes precedence over HTTP_PROXY).
 // The env-level no_proxy includes *.google.com which causes Chrome to bypass
@@ -20,8 +21,14 @@ function buildProxyConfig() {
   }
 }
 
+// BDD config: reads .feature files and generates Playwright specs into .bdd-output/
+const testDir = defineBddConfig({
+  features: 'features/**/*.feature',
+  steps: ['features/fixtures.ts', 'features/steps/**/*.ts'],
+});
+
 export default defineConfig({
-  testDir: './tests',
+  testDir,
   timeout: 30000,
   retries: 1,
   use: {
@@ -31,9 +38,9 @@ export default defineConfig({
     proxy: buildProxyConfig(),
     launchOptions: {
       args: [
-        '--disable-quic',                            // Force TCP instead of UDP/QUIC (HTTP3)
-        '--no-sandbox',                              // Required in restricted/container environments
-        '--disable-dev-shm-usage',                   // Use /tmp instead of /dev/shm
+        '--disable-quic',                             // Force TCP instead of UDP/QUIC (HTTP3)
+        '--no-sandbox',                               // Required in restricted/container environments
+        '--disable-dev-shm-usage',                    // Use /tmp instead of /dev/shm
         '--disable-gpu',
         '--disable-blink-features=AutomationControlled', // Hide headless/automation signals
       ],
