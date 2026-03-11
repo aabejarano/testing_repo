@@ -3,13 +3,9 @@ FROM mcr.microsoft.com/playwright:v1.56.0-noble
 
 WORKDIR /app
 
-# Copy dependency files first for better layer caching
+# Copy all project files including pre-installed node_modules
 COPY package.json package-lock.json ./
-
-# Install Node dependencies
-RUN npm ci
-
-# Copy the rest of the project
+COPY node_modules/ ./node_modules/
 COPY playwright.config.ts ./
 COPY tests/ ./tests/
 
