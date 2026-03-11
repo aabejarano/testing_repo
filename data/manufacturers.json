@@ -1,0 +1,4 @@
+[
+  { "query": "4Runners",     "expected_domain": "toyota.com" },
+  { "query": "Ford Mustang", "expected_domain": "ford.com"   }
+]

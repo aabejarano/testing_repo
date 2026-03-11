@@ -15,8 +15,4 @@ Feature: Google Search
     Given the results will include a link to "<expected_domain>"
     When I search for "<query>"
     Then a link to "<expected_domain>" should be visible in the results
-
-    Examples:
-      | query        | expected_domain |
-      | 4Runners     | toyota.com      |
-      | Ford Mustang | ford.com        |
+    Examples: {'datafile':'manufacturers.json'}

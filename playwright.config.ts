@@ -21,9 +21,11 @@ function buildProxyConfig() {
   }
 }
 
-// BDD config: reads .feature files and generates Playwright specs into .bdd-output/
+// BDD config: reads preprocessed (staged) feature files and generates Playwright specs.
+// The preprocessor (scripts/preprocess-features.js) expands any
+// Examples: {'datafile':'...'} references into real Gherkin tables first.
 const testDir = defineBddConfig({
-  features: 'features/**/*.feature',
+  features: '.features-staged/**/*.feature',
   steps: ['features/fixtures.ts', 'features/steps/**/*.ts'],
 });
 

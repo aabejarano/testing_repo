@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Playwright tests for Google search verification",
   "scripts": {
-    "test": "bddgen && playwright test",
-    "bddgen": "bddgen"
+    "preprocess": "node scripts/preprocess-features.js",
+    "bddgen": "bddgen",
+    "test": "npm run preprocess && bddgen && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0"
