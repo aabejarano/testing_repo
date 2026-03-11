@@ -7,7 +7,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY node_modules/ ./node_modules/
 COPY playwright.config.ts ./
-COPY tests/ ./tests/
+COPY features/ ./features/
+COPY scripts/ ./scripts/
+COPY data/ ./data/
+
+# Pre-process BDD feature files (expands external data references into Gherkin tables)
+RUN node scripts/preprocess-features.js
 
 # Run the tests as the default command
 CMD ["npx", "playwright", "test", "--reporter=list"]

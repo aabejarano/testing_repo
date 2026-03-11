@@ -1,0 +1,52 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────
+  # mitmproxy – intercepts and lets you inspect every HTTP/HTTPS
+  # request made by the test runner (or any other container).
+  #
+  #   Proxy endpoint : http://localhost:8080
+  #   Web UI         : http://localhost:8081
+  # ─────────────────────────────────────────────────────────────
+  proxy:
+    build:
+      context: ./proxy
+    ports:
+      - "8080:8080"   # proxy endpoint reachable from the host
+      - "8081:8081"   # mitmweb inspector UI
+    networks:
+      - test-net
+    # Persist the auto-generated CA cert so you can trust it once
+    # and reuse it across container restarts.
+    volumes:
+      - mitmproxy-data:/home/mitmproxy/.mitmproxy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8081"]
+      interval: 5s
+      retries: 6
+
+  # ─────────────────────────────────────────────────────────────
+  # Playwright test runner – routes all browser traffic through
+  # the proxy container above.
+  # ─────────────────────────────────────────────────────────────
+  playwright:
+    build:
+      context: .
+    environment:
+      # playwright.config.ts reads these to configure the browser proxy.
+      - HTTPS_PROXY=http://proxy:8080
+      - HTTP_PROXY=http://proxy:8080
+    depends_on:
+      proxy:
+        condition: service_healthy
+    networks:
+      - test-net
+    volumes:
+      # Save the HTML report to the host so you can open it after the run.
+      - ./playwright-report:/app/playwright-report
+
+networks:
+  test-net:
+    driver: bridge
+
+volumes:
+  mitmproxy-data:
